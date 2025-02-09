@@ -1,0 +1,31 @@
+# Version catalog is a central place for you to declare and version dependencies
+# https://docs.gradle.org/current/userguide/platforms.html#sub:version-catalog
+# https://docs.gradle.org/current/userguide/platforms.html#sub::toml-dependencies-format
+
+[versions]
+kotlin = "2.1.0"
+kotlinxDatetime = "0.6.1"
+kotlinxSerializationJSON = "1.7.2"
+kotlinxCoroutines = "1.8.1"
+cloudCore = "2.0.0"
+cloudAnnotations = "2.0.0"
+cloudPaper = "2.0.0-beta.10"
+cloudMinecraftExtras = "2.0.0-beta.10"
+
+[libraries]
+kotlinGradlePlugin = { module = "org.jetbrains.kotlin:kotlin-gradle-plugin", version.ref = "kotlin" }
+kotlinxDatetime = { module = "org.jetbrains.kotlinx:kotlinx-datetime", version.ref = "kotlinxDatetime" }
+kotlinxSerialization = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "kotlinxSerializationJSON" }
+kotlinxCoroutines = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "kotlinxCoroutines" }
+cloudCore = { module = "org.incendo:cloud-core", version.ref="cloudCore"}
+cloudAnnotations = { module = "org.incendo:cloud-annotations", version.ref="cloudAnnotations"}
+cloudPaper = { module = "org.incendo:cloud-paper", version.ref="cloudPaper"}
+cloudMinecraftExtras = { module = "org.incendo:cloud-minecraft-extras", version.ref="cloudMinecraftExtras"}
+
+# Libraries can be bundled together for easier import
+[bundles]
+kotlinxEcosystem = ["kotlinxDatetime", "kotlinxSerialization", "kotlinxCoroutines"]
+cloudEcosystem = ["cloudCore", "cloudAnnotations", "cloudPaper", "cloudMinecraftExtras"]
+
+[plugins]
+kotlinPluginSerialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }

@@ -9,9 +9,10 @@ import org.bukkit.entity.Player
 import org.incendo.cloud.annotations.AnnotationParser
 import org.incendo.cloud.annotations.Command
 import org.incendo.cloud.annotations.CommandDescription
+import org.incendo.cloud.annotations.Permission
 import org.incendo.cloud.paper.util.sender.Source
 
-class ScanCommand : AbstractCommand {
+class FixCommand : AbstractCommand {
     private lateinit var plugin: MobChunkLimiterPlugin
     override fun registerCommand(plugin: MobChunkLimiterPlugin, annotationParser: AnnotationParser<Source>) {
         annotationParser.parse(this)
@@ -19,8 +20,9 @@ class ScanCommand : AbstractCommand {
     }
 
 
-    @Command("mobchunklimiter scan")
-    @CommandDescription("Scans the chunk for mobs and prints mob information")
+    @Command("mobchunklimiter fix")
+    @Permission("mobchunklimiter.command.fix")
+    @CommandDescription("Scans the chunk and fixes mobs")
     fun scanCommand(ctx: Source){
         if(ctx.source() !is Player){
             ctx.source().sendMessage("This command can only be executed by a player!")
@@ -30,30 +32,12 @@ class ScanCommand : AbstractCommand {
         val player = ctx.source() as Player
         val chunk = player.chunk
 
-        val mobCountByType = mutableMapOf<EntityType, MobAmount>()
-        var totalMobCount = 0
-        chunk.entities.forEach { entity ->
-            if (entity is Mob) {
-                val mobType = entity.type // Assuming a property identifying the type of mob
-                if (mobCountByType[mobType] == null) {
-                    mobCountByType[mobType] = MobAmount(mobType, 1, plugin.getChunkManager().getLimit(mobType))
-                }else{
-                    mobCountByType[mobType]!!.amount += 1
-                }
-                totalMobCount++
-            }
-        }
-
 
         // send info
-        mobCountByType.forEach { (type, mob) ->
-            player.sendMessage(MobChunkLimiterPlugin.MM.deserialize(
-                "<yellow>$type <green>-> <gold>${mob.amount} <green>(<gold>${mob.maxAmount}<green>/<gold>${mob.getRatio()}<green>)"
-                //"<green>Mob type <yellow>$type<green>: <gold>$count<green>, limit: <gold>${plugin.getChunkManager().getLimit(type)}"
-            ))
-        }
+        plugin.getChunkManager().scanChunk(chunk)
+
         player.sendMessage(MobChunkLimiterPlugin.MM.deserialize(
-            "<green>Total mob count: <yellow>$totalMobCount <green>limit: <gold>${plugin.getChunkManager().getDefaultLimit()}"
+            "<green>Okay scanned and updated chunk"
         ))
 
     }

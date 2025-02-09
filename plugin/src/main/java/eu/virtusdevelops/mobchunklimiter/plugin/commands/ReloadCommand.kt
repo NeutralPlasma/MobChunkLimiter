@@ -12,7 +12,7 @@ import org.incendo.cloud.annotations.CommandDescription
 import org.incendo.cloud.annotations.Permission
 import org.incendo.cloud.paper.util.sender.Source
 
-class FixCommand : AbstractCommand {
+class ReloadCommand : AbstractCommand {
     private lateinit var plugin: MobChunkLimiterPlugin
     override fun registerCommand(plugin: MobChunkLimiterPlugin, annotationParser: AnnotationParser<Source>) {
         annotationParser.parse(this)
@@ -20,25 +20,14 @@ class FixCommand : AbstractCommand {
     }
 
 
-    @Command("mobchunklimiter fix")
-    @Permission("mobchunklimiter.command.fix")
-    @CommandDescription("Scans the chunk and fixes mobs")
-    fun scanCommand(ctx: Source){
-        if(ctx.source() !is Player){
-            ctx.source().sendMessage("This command can only be executed by a player!")
-            return
-        }
-
-        val player = ctx.source() as Player
-        val chunk = player.chunk
-
-
-        // send info
-        plugin.getChunkManager().scanChunk(chunk)
-
-        player.sendMessage(MobChunkLimiterPlugin.MM.deserialize(
-            "<green>Okay scanned and updated chunk"
-        ))
-
+    @Command("mobchunklimiter reload")
+    @Permission("mobchunklimiter.command.reload")
+    @CommandDescription("Reloads the configuration")
+    fun reloadCommand(ctx: Source){
+        val start = System.currentTimeMillis()
+        plugin.reloadConfig()
+        plugin.getChunkManager().initConfiguration()
+        var end = System.currentTimeMillis() - start;
+        ctx.source().sendMessage(MobChunkLimiterPlugin.MM.deserialize("<green>Config reloaded took: <gold>" + end + "<green>ms"))
     }
 }

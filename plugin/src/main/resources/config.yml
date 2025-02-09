@@ -1,0 +1,5 @@
+global-mob-limit: 100
+
+
+mob-limits:
+  CHICKEN: 50
